@@ -3,7 +3,7 @@ import cn from './localisation/cn.json'
 import en from './localisation/en.json'
 import zh from './localisation/zh-tw.json'
 
-const map = {cn,en, "zh-tw":zh};
+const map = {cn, "zh-tw":zh, en};
 
 var data = Object.keys(map).reduce((result,val)=>{return result+','+val},'key');
 data += '\n';
@@ -32,7 +32,9 @@ function writeLine(keys) {
   for (const obj of Object.values(map)) {
     try {
       data += ','+getValue(obj,keys);
-    } catch(err) {}
+    } catch(err) {      
+      data += ',';
+    }
   }
   data += '\n';
 }
@@ -42,12 +44,13 @@ function getKeyName(keys) {
 }
 
 function getValue(obj, keys) {
-  if (keys.length==0) return '';
+  if (!keys || keys.length==0) return '';
   else {
     let o = obj;
     for (const key of keys) {
       o = o[key];
     }
+    if (o == undefined) return '';
     return `"${String(o).replace(/\n/g, '\\n').replace(/\"/g, '\'')}"`;
   }
 }
